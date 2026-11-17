@@ -20,5 +20,5 @@ public class Passager extends Utilisateur{
 
 
     @OneToMany(mappedBy = "passager")
-    private List<Reservation> reservations;
+    private List<Reservation> reservationList;
 }
