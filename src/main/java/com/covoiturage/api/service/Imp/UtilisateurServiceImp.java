@@ -6,8 +6,12 @@ import com.covoiturage.api.entity.Utilisateur;
 import com.covoiturage.api.mapper.UtilisateurMapper;
 import com.covoiturage.api.repository.UtilisateurRepository;
 import com.covoiturage.api.service.UtilisateurService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+@Service
 public class UtilisateurServiceImp implements UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
