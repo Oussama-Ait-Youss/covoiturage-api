@@ -31,6 +31,7 @@ public interface UtilisateurMapper {
             target = "typeUtilisateur",
             expression = "java(getTypeUtilisateur(utilisateur))"
     )
+
     UtilisateurResponse toResponse(Utilisateur utilisateur);
 
     default TypeUtilisateur getTypeUtilisateur(
