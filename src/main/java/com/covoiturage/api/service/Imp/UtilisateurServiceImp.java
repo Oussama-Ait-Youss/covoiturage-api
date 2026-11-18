@@ -1,47 +1,90 @@
+
 package com.covoiturage.api.service.Imp;
 
-import com.covoiturage.api.dto.utilisateur.UtilisateurResponse;
-import com.covoiturage.api.entity.Utilisateur;
+import com.covoiturage.api.dto.utilisateur.*;
+import com.covoiturage.api.entity.Admin;
+import com.covoiturage.api.entity.Conducteur;
+import com.covoiturage.api.entity.Passager;
+
+import com.covoiturage.api.mapper.AdminMapper;
+import com.covoiturage.api.mapper.ConducteurMapper;
+import com.covoiturage.api.mapper.PassagerMapper;
+
 import com.covoiturage.api.repository.UtilisateurRepository;
 import com.covoiturage.api.service.UtilisateurService;
-import com.covoiturage.api.service.exception.EmailAlreadyExistsException;
-import com.covoiturage.api.service.exception.InvalideUtilisateurTypeException;
+import com.covoiturage.api.exception.EmailAlreadyExistsException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 public class UtilisateurServiceImp implements UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
-    private final UtilisateurMapper utilisateurMapper;
+    private final PassagerMapper passagerMapper;
+    private final ConducteurMapper conducteurMapper;
+    private final AdminMapper adminMapper;
 
-    public UtilisateurServiceImp(UtilisateurRepository utilisateurRepository, UtilisateurMapper utilisateurMapper) {
+    public UtilisateurServiceImp(
+            UtilisateurRepository utilisateurRepository,
+            PassagerMapper passagerMapper,
+            ConducteurMapper conducteurMapper,
+            AdminMapper adminMapper) {
+
         this.utilisateurRepository = utilisateurRepository;
-        this.utilisateurMapper = utilisateurMapper;
+        this.passagerMapper = passagerMapper;
+        this.conducteurMapper = conducteurMapper;
+        this.adminMapper = adminMapper;
     }
 
-
+    // CREATE PASSAGER
     @Override
     @Transactional
-    public UtilisateurResponse register(UtilisateurCreateRequest request){
+    public UtilisateurResponse createPassager(
+            PassagerCreateRequest request) {
 
-        //check if the email already exists
-        if(utilisateurRepository.existsByEmail(request.email())){
-            throw new EmailAlreadyExistsException("Email Already Exists");
+        if (utilisateurRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        Utilisateur utilisateur;
+        Passager passager = passagerMapper.toEntity(request);
 
-        switch (request.typeUtilisateur()){
-            case PASSAGER -> utilisateur = utilisateurMapper.toPassager(request);
-            case CONDUCTEUR -> utilisateur = utilisateurMapper.toConducteur(request);
-            case ADMIN -> utilisateur = utilisateurMapper.toAdmin(request);
-            default -> throw new InvalideUtilisateurTypeException("Invalide user type");
+        Passager savedPassager = utilisateurRepository.save(passager);
+
+        return passagerMapper.toResponse(savedPassager);
+    }
+
+    // CREATE CONDUCTEUR
+    @Override
+    @Transactional
+    public UtilisateurResponse createConducteur(
+            ConducteurCreateRequest request) {
+
+        if (utilisateurRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        Utilisateur saveUtilisateur = utilisateurRepository.save(utilisateur);
+        Conducteur conducteur = conducteurMapper.toEntity(request);
 
-        return utilisateurMapper.toResponse(saveUtilisateur);
+        Conducteur savedConducteur = utilisateurRepository.save(conducteur);
+
+        return conducteurMapper.toResponse(savedConducteur);
+    }
+
+    // CREATE ADMIN - TRUSTED USE ONLY
+    @Override
+    @Transactional
+    public UtilisateurResponse createAdmin(
+            AdminCreateRequest request) {
+
+        if (utilisateurRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
+
+        Admin admin = adminMapper.toEntity(request);
+
+        Admin savedAdmin = utilisateurRepository.save(admin);
+
+        return adminMapper.toResponse(savedAdmin);
     }
 }

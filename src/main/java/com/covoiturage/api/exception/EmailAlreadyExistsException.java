@@ -1,4 +1,4 @@
-package com.covoiturage.api.service.exception;
+package com.covoiturage.api.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException{
     public EmailAlreadyExistsException(String message){
