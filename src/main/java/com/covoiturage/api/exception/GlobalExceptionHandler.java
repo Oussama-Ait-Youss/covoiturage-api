@@ -1,0 +1,108 @@
+
+package com.covoiturage.api.exception;
+
+import com.covoiturage.api.exception.EmailAlreadyExistsException;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    // EMAIL ALREADY EXISTS
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleEmailExists(
+            EmailAlreadyExistsException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    // DTO VALIDATION ERRORS
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ProblemDetail> handleValidation(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Invalid request");
+
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                message,
+                request
+        );
+    }
+
+    // INVALID JSON
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidJson(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                "Invalid JSON request",
+                request
+        );
+    }
+
+    // DATABASE CONSTRAINT ERRORS
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handleDatabaseConflict(
+            DataIntegrityViolationException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Database constraint violation",
+                request
+        );
+    }
+
+    // UNEXPECTED ERRORS
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleUnexpectedError(
+            Exception ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred",
+                request
+        );
+    }
+
+    // COMMON ERROR RESPONSE
+    private ResponseEntity<ProblemDetail> buildError(
+            HttpStatus status,
+            String message,
+            HttpServletRequest request) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                status,
+                message
+        );
+
+        problem.setTitle(status.getReasonPhrase());
+        problem.setProperty("path", request.getRequestURI());
+
+        return ResponseEntity.status(status).body(problem);
+    }
+}
