@@ -1,5 +1,5 @@
 
-package com.covoiturage.api.controller;
+package com.covoiturage.api.controller.utilisateur;
 
 import com.covoiturage.api.dto.utilisateur.PassagerCreateRequest;
 import com.covoiturage.api.dto.utilisateur.UtilisateurResponse;
