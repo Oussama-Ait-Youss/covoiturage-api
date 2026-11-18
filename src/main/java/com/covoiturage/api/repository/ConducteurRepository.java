@@ -8,4 +8,8 @@ public interface ConducteurRepository
         extends JpaRepository<Conducteur, Long> {
 
     boolean existsByNumeroPermis(String numeroPermis);
+    boolean existsByNumeroPermisAndIdNot(
+            String numeroPermis,
+            Long id
+    );
 }

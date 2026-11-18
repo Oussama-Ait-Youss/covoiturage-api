@@ -42,6 +42,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // user not found
+
+    @ExceptionHandler(UtilisateurNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleUtilisateurNotFound(
+            UtilisateurNotFoundException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+
+
     // DTO VALIDATION ERRORS
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidation(
