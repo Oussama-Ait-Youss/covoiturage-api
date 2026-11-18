@@ -1,14 +1,11 @@
 package com.covoiturage.api.service.Imp;
 
-import com.covoiturage.api.dto.utilisateur.UtilisateurCreateRequest;
 import com.covoiturage.api.dto.utilisateur.UtilisateurResponse;
 import com.covoiturage.api.entity.Utilisateur;
-import com.covoiturage.api.mapper.UtilisateurMapper;
 import com.covoiturage.api.repository.UtilisateurRepository;
 import com.covoiturage.api.service.UtilisateurService;
 import com.covoiturage.api.service.exception.EmailAlreadyExistsException;
 import com.covoiturage.api.service.exception.InvalideUtilisateurTypeException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
