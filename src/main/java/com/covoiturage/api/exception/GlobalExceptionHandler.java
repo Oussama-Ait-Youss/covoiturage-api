@@ -30,6 +30,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(NumeroPermisAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleNumeroPermisExists(
+            NumeroPermisAlreadyExistsException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
     // DTO VALIDATION ERRORS
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleValidation(
