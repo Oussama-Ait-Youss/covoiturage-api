@@ -1,6 +1,7 @@
 
 package com.covoiturage.api.exception;
 
+import com.covoiturage.api.entity.Conducteur;
 import com.covoiturage.api.exception.EmailAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,18 @@ public class GlobalExceptionHandler {
             UtilisateurNotFoundException ex,
             HttpServletRequest request) {
 
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(ConducteurNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerConducteurNotFound(
+            ConducteurNotFoundException ex,
+            HttpServletRequest request
+    ){
         return buildError(
                 HttpStatus.NOT_FOUND,
                 ex.getMessage(),
