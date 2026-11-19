@@ -15,6 +15,7 @@ import com.covoiturage.api.service.VehiculeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -121,6 +122,50 @@ public class VehiculeServiceImp implements VehiculeService {
 
         return vehiculeMapper.toResponse(updatedVehicule);
     }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public VehiculeResponse getVehiculeById(Long id) {
+
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() ->
+                        new VehiculeNotFoundException("Vehicule not found")
+                );
+
+        return vehiculeMapper.toResponse(vehicule);
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteVehicule(Long id) {
+
+        // 1. Find the vehicle
+        Vehicule vehicule = vehiculeRepository.findById(id)
+                .orElseThrow(() ->
+                        new VehiculeNotFoundException("Vehicule not found")
+                );
+
+        // 2. Delete vehicle
+        vehiculeRepository.delete(vehicule);
+
+        // 3. Execute pending SQL
+        vehiculeRepository.flush();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeResponse> getAllVehicules() {
+
+        return vehiculeRepository.findAll()
+                .stream()
+                .map(vehiculeMapper::toResponse)
+                .toList();
+    }
+
 
 
 }
