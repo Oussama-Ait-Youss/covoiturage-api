@@ -69,6 +69,54 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CapacityNumberInvalideException.class)
+    public ResponseEntity<ProblemDetail> handlerCapacity(
+            CapacityNumberInvalideException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(UserNotActiveException.class)
+    public ResponseEntity<ProblemDetail> handlerUserAcitivy(
+            UserNotActiveException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(VehiculeNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerVehiculenotfound(
+            VehiculeNotFoundException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(VehiculeNotOwnedException.class)
+    public ResponseEntity<ProblemDetail> handlerVehiculeNotOwned(
+            VehiculeNotOwnedException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
 
     // DTO VALIDATION ERRORS
     @ExceptionHandler(MethodArgumentNotValidException.class)
