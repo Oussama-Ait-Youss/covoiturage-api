@@ -339,5 +339,23 @@ public class UtilisateurServiceImp implements UtilisateurService {
     }
 
 
+// ========== SEARCH CONDUCTEUR BY NOM OR EMAIL ==========
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UtilisateurResponse> searchConducteurs(String keyword) {
+
+        return conducteurRepository
+                .findByNomContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                        keyword,
+                        keyword
+                )
+                .stream()
+                .map(conducteurMapper::toResponse)
+                .toList();
+    }
+
+
+
 
 }
