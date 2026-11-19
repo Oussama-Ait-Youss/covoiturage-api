@@ -354,8 +354,4 @@ public class UtilisateurServiceImp implements UtilisateurService {
                 .map(conducteurMapper::toResponse)
                 .toList();
     }
-
-
-
-
 }
