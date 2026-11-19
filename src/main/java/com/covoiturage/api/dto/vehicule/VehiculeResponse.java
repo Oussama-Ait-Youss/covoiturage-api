@@ -7,7 +7,7 @@ public record VehiculeResponse(
 
         String marque,
 
-        String modelE,
+        String modele,
 
         String immatriculation,
 
