@@ -1,17 +1,30 @@
+
 package com.covoiturage.api.dto.trajet;
 
-import com.covoiturage.api.entity.Vehicule;
-import jakarta.validation.constraints.NotBlank;
+import com.covoiturage.api.dto.pointarret.PointArretCreateRequest;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import java.util.List;
 
 public record TrajetCreateRequest(
-        //Vehicle ID, departure/arrival, seats, pricing information and stops
 
+        @NotNull
+        Long conducteurId,
 
-//        Vehicule vehicule;
+        @NotNull
+        Long vehiculeId,
 
+        @NotNull
+        @Min(1)
+        Integer placesProposees,
 
-) {
-}
+        @NotNull
+        @Size(min = 2)
+        List<@NotNull @Valid PointArretCreateRequest> pointArrets
+
+) {}
+
 
 
 
