@@ -193,4 +193,29 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(problem);
     }
+
+    @ExceptionHandler(TrajetNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleTrajetNotFound(
+            TrajetNotFoundException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidTrajetException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidTrajet(
+            InvalidTrajetException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
 }
