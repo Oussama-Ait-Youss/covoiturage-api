@@ -9,7 +9,10 @@ import com.covoiturage.api.service.Imp.VehiculeServiceImp;
 import com.covoiturage.api.service.VehiculeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/vehicule")
@@ -36,4 +39,30 @@ public class VehiculeController {
     ){
         return vehiculeService.updateVehicule(id,request);
     }
+
+
+    // GET VEHICLE BY ID
+    @GetMapping("/{id}")
+    public VehiculeResponse getVehiculeById(
+            @PathVariable Long id) {
+
+        return vehiculeService.getVehiculeById(id);
+    }
+
+    // GET ALL VEHICLES
+    @GetMapping
+    public List<VehiculeResponse> getAllVehicules() {
+
+        return vehiculeService.getAllVehicules();
+    }
+
+    // DELETE VEHICLE
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVehicule(
+            @PathVariable Long id) {
+
+        vehiculeService.deleteVehicule(id);
+    }
+
 }
