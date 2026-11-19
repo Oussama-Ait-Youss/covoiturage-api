@@ -61,4 +61,14 @@ public class ConducteurController {
         return utilisateurService.getAllConducteurs();
     }
 
+
+    // SEARCH CONDUCTEUR BY NOM OR EMAIL
+    @GetMapping("/search")
+    public List<UtilisateurResponse> searchConducteurs(
+            @RequestParam String keyword) {
+
+        return utilisateurService.searchConducteurs(keyword);
+    }
+
+
 }

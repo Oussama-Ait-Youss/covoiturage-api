@@ -33,4 +33,7 @@ public interface UtilisateurService {
     // GET ADMINS
     UtilisateurResponse getAdminById(Long id);
     List<UtilisateurResponse> getAllAdmins();
+
+    // SEARCH CONDUCTEUR BY NOM OR EMAIL
+    List<UtilisateurResponse> searchConducteurs(String keyword);
 }
