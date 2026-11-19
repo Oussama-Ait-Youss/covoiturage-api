@@ -37,6 +37,9 @@ public class Trajet {
     @JoinColumn(name = "vehicule_id", nullable = false)
     private Vehicule vehicule;
 
+    @Column(nullable = false)
+    private LocalDateTime DateDepart;
+
 
     @OneToMany(
             mappedBy = "trajet",
