@@ -38,7 +38,7 @@ public class Trajet {
     private Vehicule vehicule;
 
     @Column(nullable = false)
-    private LocalDateTime DateDepart;
+    private LocalDateTime dateDepart;
 
 
     @OneToMany(
@@ -47,10 +47,18 @@ public class Trajet {
             orphanRemoval = true
     )
     @OrderBy("ordre ASC")
-    private List<PointArret> pointArrets;
+    private List<PointArret> pointArrets = new ArrayList<>();
 
     @OneToMany(mappedBy = "trajet")
-    private List<Reservation> reservationList;
+    private List<Reservation> reservationList = new ArrayList<>();
+
+    // Automatically called before INSERT to initialize the datecreate to the localdatetime.now
+    @PrePersist
+    public void prePersist() {
+        if (dateCreate == null) {
+            dateCreate = LocalDateTime.now();
+        }
+    }
 
 
 
