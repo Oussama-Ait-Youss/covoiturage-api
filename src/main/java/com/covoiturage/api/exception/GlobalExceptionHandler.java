@@ -218,4 +218,61 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(PassagerNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerPassager(
+            PassagerNotFoundException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+    @ExceptionHandler(TrajetNotOpenException.class)
+    public ResponseEntity<ProblemDetail> handleTrajetInscri(
+            TrajetNotOpenException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(PointArretNotFound.class)
+    public ResponseEntity<ProblemDetail> handlePointArret(
+            PointArretNotFound ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+    @ExceptionHandler(PointArretNotBelongToTrajetException.class)
+    public ResponseEntity<ProblemDetail> handlePointArretBelongToTrajet(
+            PointArretNotBelongToTrajetException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+    @ExceptionHandler(PointArretOrderException.class)
+    public ResponseEntity<ProblemDetail> handlePointArretOrder(
+            PointArretOrderException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
 }
