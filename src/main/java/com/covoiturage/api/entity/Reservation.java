@@ -51,4 +51,6 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "point_descente_id", nullable = false)
     private PointArret pointDescente;
+
+    //create method to auto create the dateCreation of the reservation
 }
