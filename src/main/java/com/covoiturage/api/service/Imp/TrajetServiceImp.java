@@ -275,7 +275,15 @@ public class TrajetServiceImp implements TrajetService {
     @Transactional
     public void cancelTrajet(Long id) {
 
-        Trajet trajet = findTrajet(id);
+        //Trajet trajet = findTrajet(id);
+
+        Trajet trajet = trajetRepository.findByIdForUpdate(id)
+                .orElseThrow(() ->
+                        new TrajetNotFoundException(
+                                "Trip not found with id: " + id
+                        )
+                );
+
 
         if (trajet.getStatus() == StatutTrajet.ANNULE
                 || trajet.getStatus() == StatutTrajet.TERMINE) {
@@ -307,7 +315,15 @@ public class TrajetServiceImp implements TrajetService {
     @Transactional
     public TrajetResponse terminerTrajet(Long id) {
 
-        Trajet trajet = findTrajet(id);
+        //Trajet trajet = findTrajet(id);
+
+        Trajet trajet = trajetRepository.findByIdForUpdate(id)
+                .orElseThrow(() ->
+                        new TrajetNotFoundException(
+                                "Trip not found with id: " + id
+                        )
+                );
+
 
         if (trajet.getStatus() == StatutTrajet.ANNULE
                 || trajet.getStatus() == StatutTrajet.TERMINE) {

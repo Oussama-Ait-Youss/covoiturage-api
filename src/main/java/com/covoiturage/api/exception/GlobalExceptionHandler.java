@@ -334,14 +334,25 @@ public class GlobalExceptionHandler {
         );
     }
 
-
-    @ExceptionHandler(InvalidTrajetDataException.class)
+@ExceptionHandler(InvalidTrajetDataException.class)
     public ResponseEntity<ProblemDetail> handleInvalidTrajetData(
             InvalidTrajetDataException ex,
             HttpServletRequest request) {
 
         return buildError(
                 HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    @ExceptionHandler(ReservationAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleReservationAlreadyExists(
+            ReservationAlreadyExistsException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
                 ex.getMessage(),
                 request
         );
