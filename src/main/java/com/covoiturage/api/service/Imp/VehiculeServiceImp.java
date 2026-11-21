@@ -161,16 +161,16 @@ public class VehiculeServiceImp implements VehiculeService {
     @Transactional
     public void deleteVehicule(Long id) {
 
-        // 1. Find the vehicle
+        //  Find the vehicle
         Vehicule vehicule = vehiculeRepository.findById(id)
                 .orElseThrow(() ->
                         new VehiculeNotFoundException("Vehicule not found")
                 );
 
-        // 2. Delete vehicle
+        //  Delete vehicle
         vehiculeRepository.delete(vehicule);
 
-        // 3. Execute pending SQL
+        //  Execute pending SQL
         vehiculeRepository.flush();
     }
 
@@ -192,18 +192,18 @@ public class VehiculeServiceImp implements VehiculeService {
             Long conducteurId
     ) {
 
-        // 1. Verify that the driver exists
+        //  Verify that the driver exists
         if (!conducteurRepository.existsById(conducteurId)) {
             throw new ConducteurNotFoundException(
                     "Driver not found with id: " + conducteurId
             );
         }
 
-        // 2. Find vehicles belonging to that driver
+        //  Find vehicles belonging to that driver
         List<Vehicule> vehicules =
                 vehiculeRepository.findByConducteurId(conducteurId);
 
-        // 3. Convert entities to DTOs
+        //  Convert entities to DTOs
         return vehicules.stream()
                 .map(vehiculeMapper::toResponse)
                 .toList();

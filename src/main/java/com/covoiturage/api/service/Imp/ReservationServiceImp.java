@@ -309,7 +309,7 @@ public class ReservationServiceImp implements ReservationService {
 
         reservationRepository.save(reservation);
 
-        // 7. Recalculate confirmed reserved seats
+        // Recalculate confirmed reserved seats
         Long seatsReserved = reservationRepository.sumPlacesReservees(
                 trajet.getId(),
                 StatutReservation.CONFIRMEE
