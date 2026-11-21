@@ -263,29 +263,29 @@ public class ReservationServiceImp implements ReservationService {
     @Transactional
     public void cancelReservation(Long id) {
 
-        // 1. Find reservation
+        //  Find reservation
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() ->
                         new ReservationNotFoundException(
                                 "Reservation not found with id: " + id
                         )
                 );
-
-        // 2. Lock the trip
+        //  Lock the trip
         Trajet trajet = trajetRepository.findByIdForUpdate(
                 reservation.getTrajet().getId()
         ).orElseThrow(() ->
                 new TrajetNotFoundException("Trip not found")
         );
 
-        // 3. Check reservation status
+
+        //  Check reservation status
         if (reservation.getStatut() != StatutReservation.CONFIRMEE) {
             throw new ReservationCancellationException(
                     "Reservation is already cancelled"
             );
         }
 
-        // 4. Check trip status
+        //  Check trip status
         if (trajet.getStatus() == StatutTrajet.TERMINE
                 || trajet.getStatus() == StatutTrajet.ANNULE) {
 
@@ -294,7 +294,7 @@ public class ReservationServiceImp implements ReservationService {
             );
         }
 
-        // 5. Check 24-hour cancellation deadline
+        //  Check 24-hour cancellation deadline
         LocalDateTime limiteAnnulation =
                 trajet.getDateDepart().minusHours(24);
 
@@ -304,7 +304,7 @@ public class ReservationServiceImp implements ReservationService {
             );
         }
 
-        // 6. Cancel reservation
+        // Cancel reservation
         reservation.setStatut(StatutReservation.ANNULEE);
 
         reservationRepository.save(reservation);
@@ -318,7 +318,7 @@ public class ReservationServiceImp implements ReservationService {
         long remainingSeats =
                 trajet.getPlacesProposees() - seatsReserved;
 
-        // 8. Reopen the trip if it was full
+        //  Reopen the trip if it was full
         if (trajet.getStatus() == StatutTrajet.COMPLET
                 && remainingSeats > 0) {
 
