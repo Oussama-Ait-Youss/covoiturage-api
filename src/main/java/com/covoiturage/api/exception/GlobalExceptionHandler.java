@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ){
         return buildError(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
                 request
         );
@@ -111,7 +111,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ){
         return buildError(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.FORBIDDEN,
                 ex.getMessage(),
                 request
         );
@@ -258,7 +258,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ){
         return buildError(
-                HttpStatus.CONFLICT,
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 request
         );
@@ -269,7 +269,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ){
         return buildError(
-                HttpStatus.CONFLICT,
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 request
         );
@@ -304,7 +304,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ){
         return buildError(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.CONFLICT,
                 ex.getMessage(),
                 request
         );
@@ -333,6 +333,20 @@ public class GlobalExceptionHandler {
                 request
         );
     }
+
+
+    @ExceptionHandler(InvalidTrajetDataException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidTrajetData(
+            InvalidTrajetDataException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
 
 
 }
