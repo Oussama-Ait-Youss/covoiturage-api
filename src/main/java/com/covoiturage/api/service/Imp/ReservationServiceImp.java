@@ -169,11 +169,145 @@ public class ReservationServiceImp implements ReservationService {
 
 
         return reservationMapper.toResponse(saveReservation);
-
-
-
-
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationResponse getReservationById(Long id) {
+
+        // 1. Find reservation
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() ->
+                        new ReservationNotFoundException(
+                                "Reservation not found with id: " + id
+                        )
+                );
+
+        // 2. Convert entity to DTO
+        return reservationMapper.toResponse(reservation);
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponse> getReservationsByPassager(
+            Long passagerId) {
+
+        // 1. Verify that the passenger exists
+        passagerRepository.findById(passagerId)
+                .orElseThrow(() ->
+                        new PassagerNotFoundException(
+                                "Passenger not found with id: " + passagerId
+                        )
+                );
+
+        // 2. Get reservations
+        List<Reservation> reservations =
+                reservationRepository.findByPassagerId(passagerId);
+
+        // 3. Convert each reservation to a response
+        return reservations.stream()
+                .map(reservationMapper::toResponse)
+                .toList();
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationResponse> getReservationsByTrajet(
+            Long trajetId) {
+
+        // 1. Verify that the trip exists
+        trajetRepository.findById(trajetId)
+                .orElseThrow(() ->
+                        new TrajetNotFoundException(
+                                "Trip not found with id: " + trajetId
+                        )
+                );
+
+        // 2. Get reservations for this trip
+        List<Reservation> reservations =
+                reservationRepository.findByTrajetId(trajetId);
+
+        // 3. Convert to DTOs
+        return reservations.stream()
+                .map(reservationMapper::toResponse)
+                .toList();
+    }
+
+
+
+
+    @Override
+    @Transactional
+    public void cancelReservation(Long id) {
+
+        // 1. Find reservation
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() ->
+                        new ReservationNotFoundException(
+                                "Reservation not found with id: " + id
+                        )
+                );
+
+        // 2. Lock the trip
+        Trajet trajet = trajetRepository.findByIdForUpdate(
+                reservation.getTrajet().getId()
+        ).orElseThrow(() ->
+                new TrajetNotFoundException("Trip not found")
+        );
+
+        // 3. Check reservation status
+        if (reservation.getStatut() != StatutReservation.CONFIRMEE) {
+            throw new ReservationCancellationException(
+                    "Reservation is already cancelled"
+            );
+        }
+
+        // 4. Check trip status
+        if (trajet.getStatus() == StatutTrajet.TERMINE
+                || trajet.getStatus() == StatutTrajet.ANNULE) {
+
+            throw new ReservationCancellationException(
+                    "Cannot cancel a reservation for this trip"
+            );
+        }
+
+        // 5. Check 24-hour cancellation deadline
+        LocalDateTime limiteAnnulation =
+                trajet.getDateDepart().minusHours(24);
+
+        if (LocalDateTime.now().isAfter(limiteAnnulation)) {
+            throw new ReservationCancellationException(
+                    "Cancellation must be at least 24 hours before departure"
+            );
+        }
+
+        // 6. Cancel reservation
+        reservation.setStatut(StatutReservation.ANNULEE);
+
+        reservationRepository.save(reservation);
+
+        // 7. Recalculate confirmed reserved seats
+        Long seatsReserved = reservationRepository.sumPlacesReservees(
+                trajet.getId(),
+                StatutReservation.CONFIRMEE
+        );
+
+        long remainingSeats =
+                trajet.getPlacesProposees() - seatsReserved;
+
+        // 8. Reopen the trip if it was full
+        if (trajet.getStatus() == StatutTrajet.COMPLET
+                && remainingSeats > 0) {
+
+            trajet.setStatus(StatutTrajet.PUBLIE);
+            trajetRepository.save(trajet);
+        }
+    }
+
 
 
 

@@ -4,10 +4,12 @@ package com.covoiturage.api.repository;
 import com.covoiturage.api.entity.Trajet;
 import com.covoiturage.api.entity.enums.StatutTrajet;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -88,4 +90,10 @@ public interface TrajetRepository extends JpaRepository<Trajet, Long> {
             @Param("prixMax") BigDecimal prixMax,
             Pageable pageable
     );
+
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM Trajet t WHERE t.id = :id")
+    Optional<Trajet> findByIdForUpdate(@Param("id") Long id);
+
 }
