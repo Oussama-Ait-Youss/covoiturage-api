@@ -36,4 +36,8 @@ public interface UtilisateurService {
 
     // SEARCH CONDUCTEUR BY NOM OR EMAIL
     List<UtilisateurResponse> searchConducteurs(String keyword);
+
+    // get passager by email
+    UtilisateurResponse getPassagerByEmail(String email);
+
 }

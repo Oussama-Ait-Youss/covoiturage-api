@@ -9,6 +9,7 @@ import com.covoiturage.api.entity.Utilisateur;
 
 import com.covoiturage.api.exception.EmailAlreadyExistsException;
 import com.covoiturage.api.exception.NumeroPermisAlreadyExistsException;
+import com.covoiturage.api.exception.PassagerNotFoundException;
 import com.covoiturage.api.exception.UtilisateurNotFoundException;
 
 import com.covoiturage.api.mapper.AdminMapper;
@@ -354,4 +355,23 @@ public class UtilisateurServiceImp implements UtilisateurService {
                 .map(conducteurMapper::toResponse)
                 .toList();
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public UtilisateurResponse getPassagerByEmail(String email) {
+
+        Passager passager = passagerRepository
+                .findByEmailIgnoreCase(email.trim())
+                .orElseThrow(() ->
+                        new PassagerNotFoundException(
+                                "Passenger not found with email: " + email
+                        )
+                );
+
+        return passagerMapper.toResponse(passager);
+    }
+
+
+
 }

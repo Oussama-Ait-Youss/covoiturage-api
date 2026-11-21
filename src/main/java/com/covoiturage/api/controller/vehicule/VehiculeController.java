@@ -27,18 +27,21 @@ public class VehiculeController {
 
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public VehiculeResponse createVehicule(
             @Valid @RequestBody VehiculeCreateRequest request){
         return vehiculeService.createVehicule(request);
     }
 
+
     @PutMapping("/{id}")
     public VehiculeResponse updateVehicule(
-            Long id,
-            @Valid VehiculeUpdateRequest request
-    ){
-        return vehiculeService.updateVehicule(id,request);
+            @PathVariable Long id,
+            @Valid @RequestBody VehiculeUpdateRequest request
+    ) {
+        return vehiculeService.updateVehicule(id, request);
     }
+
 
 
     // GET VEHICLE BY ID
@@ -64,5 +67,17 @@ public class VehiculeController {
 
         vehiculeService.deleteVehicule(id);
     }
+
+
+    // GET VEHICLES BY DRIVER
+    @GetMapping("/conducteurs/{conducteurId}")
+    public List<VehiculeResponse> getVehiculesByConducteur(
+            @PathVariable Long conducteurId
+    ) {
+        return vehiculeService.getVehiculesByConducteur(
+                conducteurId
+        );
+    }
+
 
 }
