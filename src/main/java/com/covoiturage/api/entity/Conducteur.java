@@ -13,10 +13,6 @@ import java.util.List;
 @Table(name = "conducteur")
 public class Conducteur extends Utilisateur{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false,length = 50,unique = true)
     private String numeroPermis;
 

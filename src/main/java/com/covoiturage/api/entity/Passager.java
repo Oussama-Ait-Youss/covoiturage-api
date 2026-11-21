@@ -14,9 +14,6 @@ import java.util.List;
 public class Passager extends Utilisateur{
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
 
     @OneToMany(mappedBy = "passager")
