@@ -30,4 +30,11 @@ public interface ReservationRepository
             Long trajetId,
             StatutReservation statut
     );
+
+    // Get reservations for a passenger
+    List<Reservation> findByPassagerId(Long passagerId);
+
+
+    // Get reservations for a trip
+    List<Reservation> findByTrajetId(Long trajetId);
 }

@@ -12,19 +12,19 @@ public interface ReservationService {
 
 
 //
-//    ReservationResponse getReservationById(Long id);
+    ReservationResponse getReservationById(Long id);
 //
 //
 //
-//    List<ReservationResponse> getReservationsByPassager(Long passagerId);
+    List<ReservationResponse> getReservationsByPassager(Long passagerId);
 //
 //
 //
-//    List<ReservationResponse> getReservationsByTrajet(Long trajetId);
+    List<ReservationResponse> getReservationsByTrajet(Long trajetId);
 //
 //
 //
-//    void cancelReservation(Long id);
+    void cancelReservation(Long id);
 
 
 }

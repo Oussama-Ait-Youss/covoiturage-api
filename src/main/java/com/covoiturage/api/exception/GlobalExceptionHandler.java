@@ -309,5 +309,30 @@ public class GlobalExceptionHandler {
                 request
         );
     }
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleReservationNotFound(
+            ReservationNotFoundException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                request
+        );
+    }
+
+
+    @ExceptionHandler(ReservationCancellationException.class)
+    public ResponseEntity<ProblemDetail> handleReservationCancellation(
+            ReservationCancellationException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
 
 }
