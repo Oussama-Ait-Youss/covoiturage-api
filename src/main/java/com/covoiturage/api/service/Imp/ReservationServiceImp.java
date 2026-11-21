@@ -65,11 +65,18 @@ public class ReservationServiceImp implements ReservationService {
             );
         }
 
+        //check if the passager has reserved already
+        if (!Boolean.TRUE.equals(passager.isActif())) {
+            throw new UserNotActiveException(
+                    "The passenger account is inactive"
+            );
+        }
+
 
         //get the trajet
         // here i don't consider two passager reserve one last seat, i don't use the lock that declare in the trajte repository
         //Trajet trajet = trajetRepository.findById(request.trajetId()).orElseThrow(() -> new TrajetNotFoundException("trajet not found..."));
-
+        // find the trajte and lock it
         Trajet trajet = trajetRepository.findByIdForUpdate(
                 request.trajetId()
         ).orElseThrow(() ->

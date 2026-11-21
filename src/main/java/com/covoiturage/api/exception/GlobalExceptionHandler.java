@@ -335,4 +335,18 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(ReservationAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleReservationAlreadyExists(
+            ReservationAlreadyExistsException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
+
+
 }
