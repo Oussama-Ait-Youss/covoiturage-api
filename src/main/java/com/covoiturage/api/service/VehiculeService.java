@@ -29,4 +29,8 @@ public interface VehiculeService {
     //delete vehicule
     void deleteVehicule(Long id);
 
+    //get vehicule by conducteur
+    List<VehiculeResponse> getVehiculesByConducteur(Long conducteurId);
+
+
 }

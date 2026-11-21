@@ -52,5 +52,4 @@ public class Reservation {
     @JoinColumn(name = "point_descente_id", nullable = false)
     private PointArret pointDescente;
 
-    //create method to auto create the dateCreation of the reservation
 }

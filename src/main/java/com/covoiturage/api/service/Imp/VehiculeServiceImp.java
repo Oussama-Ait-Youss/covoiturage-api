@@ -167,5 +167,30 @@ public class VehiculeServiceImp implements VehiculeService {
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<VehiculeResponse> getVehiculesByConducteur(
+            Long conducteurId
+    ) {
+
+        // 1. Verify that the driver exists
+        if (!conducteurRepository.existsById(conducteurId)) {
+            throw new ConducteurNotFoundException(
+                    "Driver not found with id: " + conducteurId
+            );
+        }
+
+        // 2. Find vehicles belonging to that driver
+        List<Vehicule> vehicules =
+                vehiculeRepository.findByConducteurId(conducteurId);
+
+        // 3. Convert entities to DTOs
+        return vehicules.stream()
+                .map(vehiculeMapper::toResponse)
+                .toList();
+    }
+
+
+
 
 }

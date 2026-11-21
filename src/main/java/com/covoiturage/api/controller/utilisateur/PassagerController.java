@@ -60,4 +60,14 @@ public class PassagerController {
         return utilisateurService.getAllPassagers();
     }
 
+
+    // SEARCH PASSAGER BY EMAIL
+    @GetMapping("/search")
+    public UtilisateurResponse searchPassagerByEmail(
+            @RequestParam String email
+    ) {
+        return utilisateurService.getPassagerByEmail(email);
+    }
+
+
 }
