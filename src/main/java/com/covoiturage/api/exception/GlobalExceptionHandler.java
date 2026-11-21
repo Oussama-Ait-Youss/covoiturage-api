@@ -274,5 +274,40 @@ public class GlobalExceptionHandler {
                 request
         );
     }
+    @ExceptionHandler(InvalidReservationException.class)
+    public ResponseEntity<ProblemDetail> handleReservationTime(
+            InvalidReservationException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
+
+    @ExceptionHandler(NomberplacesNotValideException.class)
+    public ResponseEntity<ProblemDetail> handleNomberPlacesOfReservation(
+            NomberplacesNotValideException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+    @ExceptionHandler(NumberOfSeatNotEnoughException.class)
+    public ResponseEntity<ProblemDetail> handleNumberOfPlacesNotEnough(
+            NumberOfSeatNotEnoughException ex,
+            HttpServletRequest request
+    ){
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
 
 }
