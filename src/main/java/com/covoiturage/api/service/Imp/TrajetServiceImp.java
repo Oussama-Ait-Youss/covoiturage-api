@@ -383,8 +383,9 @@ public class TrajetServiceImp implements TrajetService {
         if (places == null || capacite == null
                 || places < 1 || places > capacite) {
 
-            throw new InvalidTrajetException(
-                    "Places must be between 1 and vehicle capacity"
+            throw new InvalidTrajetDataException(
+                    "The number of offered seats must be between 1 and "
+                            + capacite
             );
         }
     }
