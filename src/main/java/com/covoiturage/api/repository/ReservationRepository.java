@@ -37,4 +37,12 @@ public interface ReservationRepository
 
     // Get reservations for a trip
     List<Reservation> findByTrajetId(Long trajetId);
+
+    //check if the passager already has a reservation in a trajet
+    boolean existsByPassagerIdAndTrajetIdAndStatut(
+            Long passagerId,
+            Long trajetId,
+            StatutReservation statut
+    );
+
 }
