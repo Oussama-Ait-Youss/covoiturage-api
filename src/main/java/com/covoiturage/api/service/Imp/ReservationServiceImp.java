@@ -67,7 +67,17 @@ public class ReservationServiceImp implements ReservationService {
 
 
         //get the trajet
-        Trajet trajet = trajetRepository.findById(request.trajetId()).orElseThrow(() -> new TrajetNotFoundException("trajet not found..."));
+        // here i don't consider two passager reserve one last seat, i don't use the lock that declare in the trajte repository
+        //Trajet trajet = trajetRepository.findById(request.trajetId()).orElseThrow(() -> new TrajetNotFoundException("trajet not found..."));
+
+        Trajet trajet = trajetRepository.findByIdForUpdate(
+                request.trajetId()
+        ).orElseThrow(() ->
+                new TrajetNotFoundException(
+                        "Trip not found with id: " + request.trajetId()
+                )
+        );
+
 
 
         //validate the trajet status
