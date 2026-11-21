@@ -1,0 +1,14 @@
+package com.covoiturage.api.repository;
+
+import com.covoiturage.api.entity.Passager;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+public interface PassagerRepository extends JpaRepository<Passager,Long> {
+    // search for a passager by email
+    Optional<Passager> findByEmailIgnoreCase(String email);
+
+
+}
