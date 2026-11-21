@@ -96,4 +96,12 @@ public interface TrajetRepository extends JpaRepository<Trajet, Long> {
     @Query("SELECT t FROM Trajet t WHERE t.id = :id")
     Optional<Trajet> findByIdForUpdate(@Param("id") Long id);
 
+
+
+    boolean existsByVehiculeIdAndPlacesProposeesGreaterThan(
+            Long vehiculeId,
+            Integer capacite
+    );
+
+
 }

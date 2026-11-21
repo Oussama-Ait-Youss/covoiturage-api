@@ -59,7 +59,7 @@ public class TrajetServiceImp implements TrajetService {
         if (!vehicule.getConducteur().getId()
                 .equals(request.conducteurId())) {
 
-            throw new InvalidTrajetException(
+            throw new VehiculeNotOwnedException(
                     "Vehicle does not belong to this driver"
             );
         }

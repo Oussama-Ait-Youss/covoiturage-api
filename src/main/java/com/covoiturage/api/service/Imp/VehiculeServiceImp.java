@@ -9,6 +9,7 @@ import com.covoiturage.api.entity.Vehicule;
 import com.covoiturage.api.exception.*;
 import com.covoiturage.api.mapper.VehiculeMapper;
 import com.covoiturage.api.repository.ConducteurRepository;
+import com.covoiturage.api.repository.TrajetRepository;
 import com.covoiturage.api.repository.UtilisateurRepository;
 import com.covoiturage.api.repository.VehiculeRepository;
 import com.covoiturage.api.service.VehiculeService;
@@ -27,12 +28,14 @@ public class VehiculeServiceImp implements VehiculeService {
     private final ConducteurRepository conducteurRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final VehiculeMapper vehiculeMapper;
+    private final TrajetRepository trajetRepository;
 
-    public VehiculeServiceImp(VehiculeRepository vehiculeRepository, ConducteurRepository conducteurRepository, UtilisateurRepository utilisateurRepository, VehiculeMapper vehiculeMapper) {
+    public VehiculeServiceImp(VehiculeRepository vehiculeRepository, ConducteurRepository conducteurRepository, UtilisateurRepository utilisateurRepository, VehiculeMapper vehiculeMapper, TrajetRepository trajetRepository) {
         this.vehiculeRepository = vehiculeRepository;
         this.conducteurRepository = conducteurRepository;
         this.utilisateurRepository = utilisateurRepository;
         this.vehiculeMapper = vehiculeMapper;
+        this.trajetRepository = trajetRepository;
     }
 
 
@@ -69,7 +72,7 @@ public class VehiculeServiceImp implements VehiculeService {
             Long id,
             VehiculeUpdateRequest request) {
 
-        // 1. Find the vehicle
+        //  Find the vehicle
         Vehicule vehicule = vehiculeRepository.findById(id)
                 .orElseThrow(() ->
                         new VehiculeNotFoundException("Vehicule not found")
@@ -89,19 +92,19 @@ public class VehiculeServiceImp implements VehiculeService {
             throw new NumeroPermisAlreadyExistsException("Numero Permis Already exists..");
         }
 
-        // 3. Find the driver
+        //  Find the driver
         Conducteur conducteur = conducteurRepository.findById(
                 request.conducteurId()
         ).orElseThrow(() ->
                 new ConducteurNotFoundException("Conducteur not found")
         );
 
-        // 4. Check driver status
+        //  Check driver status
         if (!Boolean.TRUE.equals(conducteur.isActif())) {
             throw new UserNotActiveException("Conducteur is not active");
         }
 
-        // 5. Validate capacity
+        //  Validate capacity
         if (request.capacite() == null
                 || request.capacite() < 1
                 || request.capacite() > 8) {
@@ -111,13 +114,29 @@ public class VehiculeServiceImp implements VehiculeService {
             );
         }
 
-        // 6. Update existing vehicle
+
+        // Check if existing trips require more seats
+        boolean incompatibleTrips =
+                trajetRepository.existsByVehiculeIdAndPlacesProposeesGreaterThan(
+                        vehicule.getId(),
+                        request.capacite()
+                );
+
+        if (incompatibleTrips) {
+            throw new InvalidVehiculeCapacityException(
+                    "Cannot reduce capacity: an existing trip offers "
+                            + "more seats than the new capacity"
+            );
+        }
+
+
+        //  Update existing vehicle
         vehiculeMapper.updateEntity(request, vehicule);
 
-        // 7. Set driver
+        //  Set driver
         vehicule.setConducteur(conducteur);
 
-        // 8. Save and return response
+        //  Save and return response
         Vehicule updatedVehicule = vehiculeRepository.save(vehicule);
 
         return vehiculeMapper.toResponse(updatedVehicule);
