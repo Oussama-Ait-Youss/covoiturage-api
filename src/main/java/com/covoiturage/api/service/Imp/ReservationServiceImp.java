@@ -55,42 +55,44 @@ public class ReservationServiceImp implements ReservationService {
     public ReservationResponse createReservation(ReservationCreateRequest request){
 
         //get the passager
-        Passager passager = passagerRepository.findById(request.passagerId()).orElseThrow(() -> new PassagerNotFoundException("passager not found"));
+        Passager passager = passagerRepository
+                .findById(request.passagerId())
+                .orElseThrow(() ->
+                        new PassagerNotFoundException("Passenger not found")
+                );
 
-
-        //check if the passager not active
+        //Verify passenger is active
         if (!Boolean.TRUE.equals(passager.isActif())) {
             throw new UserNotActiveException(
                     "The passenger account is inactive"
             );
         }
 
-        //check if the passager has reserved already
-        if (!Boolean.TRUE.equals(passager.isActif())) {
-            throw new UserNotActiveException(
-                    "The passenger account is inactive"
-            );
-        }
-
-
-        //get the trajet
-        // here i don't consider two passager reserve one last seat, i don't use the lock that declare in the trajte repository
-        //Trajet trajet = trajetRepository.findById(request.trajetId()).orElseThrow(() -> new TrajetNotFoundException("trajet not found..."));
-        // find the trajte and lock it
+        //Find trip WITH lock
         Trajet trajet = trajetRepository.findByIdForUpdate(
                 request.trajetId()
         ).orElseThrow(() ->
-                new TrajetNotFoundException(
-                        "Trip not found with id: " + request.trajetId()
-                )
+                new TrajetNotFoundException("Trip not found")
         );
 
-
-
-        //validate the trajet status
+        //Verify trip is published
         if (trajet.getStatus() != StatutTrajet.PUBLIE) {
             throw new TrajetNotOpenException(
                     "The trip is not available for reservation"
+            );
+        }
+
+        //Prevent duplicate confirmed reservations
+        boolean alreadyReserved =
+                reservationRepository.existsByPassagerIdAndTrajetIdAndStatut(
+                        passager.getId(),
+                        trajet.getId(),
+                        StatutReservation.CONFIRMEE
+                );
+
+        if (alreadyReserved) {
+            throw new ReservationAlreadyExistsException(
+                    "Passenger already has a confirmed reservation for this trip"
             );
         }
 
