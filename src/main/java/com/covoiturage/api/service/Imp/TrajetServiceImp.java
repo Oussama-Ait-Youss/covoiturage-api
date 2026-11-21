@@ -48,14 +48,14 @@ public class TrajetServiceImp implements TrajetService {
     @Transactional
     public TrajetResponse createTrajet(TrajetCreateRequest request) {
 
-        // 1. Find vehicle
+        //  Find vehicle
         Vehicule vehicule = vehiculeRepository.findById(
                 request.vehiculeId()
         ).orElseThrow(() ->
                 new VehiculeNotFoundException("Vehicule not found")
         );
 
-        // 2. Check ownership
+        // Check ownership
         if (!vehicule.getConducteur().getId()
                 .equals(request.conducteurId())) {
 
@@ -64,7 +64,7 @@ public class TrajetServiceImp implements TrajetService {
             );
         }
 
-        // 3. Check driver status
+        // Check driver status
         if (!Boolean.TRUE.equals(
                 vehicule.getConducteur().isActif())) {
 
@@ -73,22 +73,22 @@ public class TrajetServiceImp implements TrajetService {
             );
         }
 
-        // 4. Check proposed seats
+        //  Check proposed seats
         validatePlaces(request.placesProposees(),
                 vehicule.getCapacite());
 
-        // 5. Validate and sort stops
+        // Validate and sort stops
         List<PointArretCreateRequest> points =
                 validatePoints(request.pointArrets());
 
-        // 6. Create trip
+        // Create trip
         Trajet trajet = trajetMapper.toEntity(request);
 
         trajet.setVehicule(vehicule);
         trajet.setStatus(StatutTrajet.PUBLIE);
         trajet.setDateDepart(points.get(0).heurePassage());
 
-        // 7. Create the stop entities
+        // Create the stop entities
         for (PointArretCreateRequest pointRequest : points) {
 
             PointArret point = new PointArret();
@@ -105,7 +105,7 @@ public class TrajetServiceImp implements TrajetService {
             trajet.getPointArrets().add(point);
         }
 
-        // 8. Save trip and stops
+        //  Save trip and stops
         Trajet savedTrajet = trajetRepository.saveAndFlush(trajet);
 
         return toResponse(savedTrajet);
