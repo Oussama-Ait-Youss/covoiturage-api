@@ -18,6 +18,7 @@ import com.covoiturage.api.service.ReservationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -129,9 +130,45 @@ public class ReservationServiceImp implements ReservationService {
             );
         }
 
+        // calculate the montantTotal
+        // 1. Calculate segment price
+        BigDecimal prixSegment = pointDescente.getPrixDepuisDepart()
+                .subtract(pointMontee.getPrixDepuisDepart());
+
+        // 2. Calculate total amount
+        BigDecimal montantTotal = prixSegment.multiply(
+                BigDecimal.valueOf(request.nombrePlaces())
+        );
 
 
+        //create reservation
+        Reservation reservation = reservationMapper.toEntity(request);
 
+        // Assign relationships
+        reservation.setPassager(passager);
+        reservation.setTrajet(trajet);
+        reservation.setPointMontee(pointMontee);
+        reservation.setPointDescente(pointDescente);
+
+        // Assign calculated fields
+        reservation.setMontantTotal(montantTotal);
+        reservation.setDateReservation(LocalDateTime.now());
+        reservation.setStatut(StatutReservation.CONFIRMEE);
+
+        Reservation saveReservation = reservationRepository.save(reservation);
+
+        //update the trajet status
+
+        long remainingAfterBooking =
+                remainingSeats - request.nombrePlaces();
+
+        if (remainingAfterBooking == 0) {
+            trajet.setStatus(StatutTrajet.COMPLET);
+            trajetRepository.save(trajet);
+        }
+
+
+        return reservationMapper.toResponse(saveReservation);
 
 
 
