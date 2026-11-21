@@ -349,4 +349,19 @@ public class GlobalExceptionHandler {
 
 
 
+    @ExceptionHandler(InvalidVehiculeCapacityException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidVehiculeCapacity(
+            InvalidVehiculeCapacityException ex,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                request
+        );
+    }
+
+
+
+
 }
